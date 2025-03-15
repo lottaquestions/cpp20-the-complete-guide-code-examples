@@ -46,3 +46,5 @@ Thumbs.db
 *~
 *#
 .emacs.desktop
+# Directories
+.vscode/

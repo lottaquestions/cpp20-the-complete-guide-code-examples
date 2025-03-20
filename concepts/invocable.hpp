@@ -11,7 +11,7 @@ class BlockProcessor1
 public:
     void Process(std::span<const float> input,
                  std::span<float> output,
-                 std::invocable < std::span<float> auto&& processFn);
+                 std::invocable < std::span<float>> auto&& processFn);
 };
 
 // Example that checks if the template parameter is invocable

@@ -40,6 +40,30 @@ auto maxValue5(const IsPointer auto a, const IsPointer auto b) requires std::equ
     return maxValue2(*a, *b);
 }
 
+// Another trailing requires that uses a standard library concept
+auto maxValue6(const IsPointer auto a, const IsPointer auto b) requires std::totally_ordered_with<decltype(*a), decltype(*b)>{
+    return maxValue2(*a, *b);
+}
+
+// Concept with multiple constraints
+template<typename T>
+concept IsPointer2 = requires (T p) {
+    *p;                            // operator* has to be valid
+    p == nullptr;                  // has to be comparable against nullptr
+    {p < p} -> std::same_as<bool>; // operator< yields a boolean
+};
+
+auto maxValue7(const IsPointer2 auto a, const IsPointer2 auto b){
+    return maxValue2(*a, *b);
+}
+
+// Constraining a templated function with an ad-hoc constraint (unnamed concept)
+template<typename T>
+requires requires (T p){ *p; } // requires clause calling a requires expression, hence the double requires requires
+auto maxValue8(T a, T b){
+    return maxValue2(*a, *b);
+}
+
 
 int main(){
     int a {10}, b{30};
@@ -58,6 +82,9 @@ int main(){
     std::cout << "The maximum value between contents of " << &ap << " and contents of " << &bp << " is " << maxValue3(&ap,&bp) << std::endl;
     std::cout << "The maximum value between contents of " << &ap << " and contents of " << &bp << " is " << maxValue4(&ap,&bp) << std::endl;
     std::cout << "The maximum value between contents of " << &ap << " and contents of " << &bp << " is " << maxValue5(&ap,&bp) << std::endl;
+    std::cout << "The maximum value between contents of " << &ap << " and contents of " << &bp << " is " << maxValue6(&ap,&bp) << std::endl;
+    std::cout << "The maximum value between contents of " << &ap << " and contents of " << &bp << " is " << maxValue7(&ap,&bp) << std::endl;
+    std::cout << "The maximum value between contents of " << &ap << " and contents of " << &bp << " is " << maxValue8(&ap,&bp) << std::endl;
     
     return 0;
 }
